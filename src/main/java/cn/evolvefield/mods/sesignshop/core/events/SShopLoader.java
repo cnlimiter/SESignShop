@@ -171,19 +171,21 @@ public class SShopLoader {
                 && event.getPlayer().isCrouching()
         )
         {
+            PlayerEntity player = event.getPlayer();
             BlockState state = event.getWorld().getBlockState(event.getPos());
             BlockPos backBlock = BlockPos.of(BlockPos.offset(event.getPos().asLong(), Direction.NORTH));
             BlockState signState = event.getWorld().getBlockState(backBlock);
             TileEntity chestTile = event.getWorld().getBlockEntity(event.getPos());
-
+            AccountManager wsd = AccountManager.get(player.getServer().overworld());
+            double bal = wsd.getBalance(player.getUUID());
 
             if(signState == Blocks.AIR.defaultBlockState() && chestTile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).isPresent()){
                 event.getWorld().setBlock(backBlock, Blocks.OAK_WALL_SIGN.defaultBlockState(), 2);
                 SignTileEntity signTile = (SignTileEntity) event.getWorld().getBlockEntity(backBlock);
                 CompoundNBT nbt = signTile.serializeNBT();
                 Minecraft.getInstance().setScreen(new ShopCreateGui(chestTile,signTile,event.getWorld(),backBlock,nbt,event.getPlayer()));
-                ItemStack wand = SSRegistry.shopCreate.get().getDefaultInstance();
-                wand.setDamageValue(wand.getDamageValue() - 1);
+                wsd.setBalance(player.getUUID(), bal - 10);
+                player.sendMessage(new TranslationTextComponent("message.create.money", SEConfig.CURRENCY_SYMBOL.get()+10), player.getUUID());
             }
 
 

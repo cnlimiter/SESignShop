@@ -4,6 +4,7 @@
 
 
     "message.create.failure.noItem": "No item in chest",
+    "message.create.money": "Create a shop by giving %s",
     "message.activate.failure.admin":"Server shops can only be activated by admins",
     "message.shop.buy.failure.same":"Can't buy for you are owner",
     "message.shop.buy.failure.stock":"Shop out of stock",

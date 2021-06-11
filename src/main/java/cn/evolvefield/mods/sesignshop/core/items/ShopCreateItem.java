@@ -24,18 +24,10 @@ public class ShopCreateItem extends Item {
     @Override
     public void appendHoverText(ItemStack itemStack, @Nullable World world, List<ITextComponent> tooltip, ITooltipFlag tag) {
 
-        LoreUtil.addInformationLore(tooltip, new TranslationTextComponent("tooltip.item.shopCreate.use").toString(), true);
+        tooltip.add(new TranslationTextComponent("tooltip.item.shopCreate.use"));
+
 
     }
 
 
-    @Override
-    public int getMaxDamage(ItemStack stack) {
-        return 200;
-    }
-
-    @Override
-    public boolean showDurabilityBar(ItemStack stack) {
-        return super.showDurabilityBar(stack);
-    }
 }
