@@ -1,9 +1,5 @@
-package cm.evolvefield.mods.sesignshop.commands;
+package cn.evolvefield.mods.sesignshop.commands;
 
-import cn.evolvefield.mods.simpleeco.commands.EcoCommand;
-import cn.evolvefield.mods.simpleeco.commands.MoneyCommand;
-import cn.evolvefield.mods.simpleeco.commands.PayCommand;
-import cn.evolvefield.mods.simpleeco.commands.ShopBuildCommand;
 import com.mojang.brigadier.CommandDispatcher;
 import net.minecraft.command.CommandSource;
 import net.minecraftforge.event.RegisterCommandsEvent;

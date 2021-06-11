@@ -1,4 +1,4 @@
-package cm.evolvefield.mods.sesignshop.utils;
+package cn.evolvefield.mods.sesignshop.utils;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -9,7 +9,7 @@ import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
 
-import static cm.evolvefield.mods.sesignshop.SESignShop.MOD_ID;
+import static cn.evolvefield.mods.sesignshop.SESignShop.MOD_ID;
 
 public class ScreenUtil {
     private static final int TEXTURE_SIZE = 256;

@@ -1,4 +1,4 @@
-package cm.evolvefield.mods.sesignshop.client.gui.base;
+package cn.evolvefield.mods.sesignshop.client.gui.base;
 
 public class ScreenRect {
     public final int width;

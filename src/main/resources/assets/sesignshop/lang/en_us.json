@@ -1,5 +1,9 @@
 {
     "item.sesignshop.shop_create":"Shop Create Wand",
+    "tooltip.item.shopCreate.use": "First,put what you want to sell/buy in chest,then sneak to right click chest",
+
+
+    "message.create.failure.noItem": "No item in chest",
     "message.activate.failure.admin":"Server shops can only be activated by admins",
     "message.shop.buy.failure.same":"Can't buy for you are owner",
     "message.shop.buy.failure.stock":"Shop out of stock",
@@ -11,5 +15,12 @@
     "message.shop.sell.failure.funds":"Vendor funds are insufficient",
     "message.shop.sell.failure.stock":"You do not have enough to sell",
     "message.shop.sell.failure.space":"Shop inventory is full and cannot accept items",
-    "message.shop.sell.success":"You received %s for %s"
+    "message.shop.sell.success":"You received %s for %s",
+    "message.gui.title": "Sign Shop",
+    "message.gui.introduce": "Item Introduce:",
+    "message.gui.value":"Item Value:",
+    "message.gui.type.buy": "Type:Buy",
+    "message.gui.type.sell": "Type:Sell",
+    "message.gui.create": "Create Shop!"
+
 }

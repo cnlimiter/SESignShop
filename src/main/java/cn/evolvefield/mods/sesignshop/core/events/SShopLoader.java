@@ -1,11 +1,12 @@
-package cm.evolvefield.mods.sesignshop.core.events;
+package cn.evolvefield.mods.sesignshop.core.events;
 
-import cm.evolvefield.mods.sesignshop.client.gui.ShopCreateGui;
-import cm.evolvefield.mods.sesignshop.core.SSRegistry;
+import cn.evolvefield.mods.sesignshop.client.gui.ShopCreateGui;
+import cn.evolvefield.mods.sesignshop.core.SSRegistry;
 import cn.evolvefield.mods.simpleeco.core.SEConfig;
 import cn.evolvefield.mods.simpleeco.data.AccountManager;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.block.*;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -34,7 +35,7 @@ import net.minecraftforge.items.IItemHandler;
 
 import java.util.*;
 
-import static cm.evolvefield.mods.sesignshop.SESignShop.MOD_ID;
+import static cn.evolvefield.mods.sesignshop.SESignShop.MOD_ID;
 
 
 @Mod.EventBusSubscriber( modid=MOD_ID, bus=Mod.EventBusSubscriber.Bus.FORGE)
@@ -162,36 +163,51 @@ public class SShopLoader {
         }
     }
 
-//    @SubscribeEvent
-//    public static void onChestRightClick(PlayerInteractEvent.RightClickBlock event){
-//        if (!event.getWorld().isClientSide &&
-//                event.getWorld().getBlockState(event.getPos()).getBlock() instanceof ChestBlock &&
-//                event.getPlayer().isCrouching())
-//        {
-//            BlockState state = event.getWorld().getBlockState(event.getPos());
-//            ChestBlock chest = (ChestBlock) state.getBlock();
-//            BlockPos backBlock = BlockPos.of(BlockPos.offset(event.getPos().asLong(), 1,0,0));
-//            BlockState sign = event.getWorld().getBlockState(backBlock);
-//
-//        }
-//
-//    }
+    @SubscribeEvent
+    public static void onChestRightClick(PlayerInteractEvent.RightClickBlock event){
+        if (!event.getWorld().isClientSide &&
+                event.getWorld().getBlockState(event.getPos()).getBlock() instanceof ChestBlock
+                && event.getPlayer().getMainHandItem().getItem() == SSRegistry.shopCreate.get()
+                && event.getPlayer().isCrouching()
+        )
+        {
+            BlockState state = event.getWorld().getBlockState(event.getPos());
+            BlockPos backBlock = BlockPos.of(BlockPos.offset(event.getPos().asLong(), Direction.NORTH));
+            BlockState signState = event.getWorld().getBlockState(backBlock);
+            TileEntity chestTile = event.getWorld().getBlockEntity(event.getPos());
+
+
+            if(signState == Blocks.AIR.defaultBlockState() && chestTile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).isPresent()){
+                event.getWorld().setBlock(backBlock, Blocks.OAK_WALL_SIGN.defaultBlockState(), 2);
+                SignTileEntity signTile = (SignTileEntity) event.getWorld().getBlockEntity(backBlock);
+                CompoundNBT nbt = signTile.serializeNBT();
+                Minecraft.getInstance().setScreen(new ShopCreateGui(chestTile,signTile,event.getWorld(),backBlock,nbt,event.getPlayer()));
+                ItemStack wand = SSRegistry.shopCreate.get().getDefaultInstance();
+                wand.setDamageValue(wand.getDamageValue() - 1);
+            }
+
+
+        }
+
+    }
 
     @SuppressWarnings({ "resource", "static-access" })
     @SubscribeEvent
     public static void onSignRightClick(PlayerInteractEvent.RightClickBlock event) {
+
         if (!event.getWorld().isClientSide && event.getWorld().getBlockState(event.getPos()).getBlock() instanceof WallSignBlock) {
             BlockState state = event.getWorld().getBlockState(event.getPos());
             WallSignBlock sign = (WallSignBlock) state.getBlock();
             BlockPos backBlock = BlockPos.of(BlockPos.offset(event.getPos().asLong(), state.getValue(sign.FACING).getOpposite()));
-            if (event.getWorld().getBlockEntity(backBlock) != null && (event.getPlayer().getMainHandItem().getItem() == SSRegistry.shopCreate.get())) {
+            if (event.getWorld().getBlockEntity(backBlock) != null ) {
                 TileEntity invTile = event.getWorld().getBlockEntity(backBlock);
                 if (invTile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).isPresent()) {
                     SignTileEntity tile = (SignTileEntity) event.getWorld().getBlockEntity(event.getPos());
                     CompoundNBT nbt = tile.serializeNBT();
                     if (!nbt.contains("ForgeData") || !nbt.getCompound("ForgeData").contains("shop-activated") ) {
-                        //new ShopCreateGui(invTile,tile,event.getWorld(),event.getPos(),nbt,event.getPlayer());
-                        activateShop(invTile, tile, event.getWorld(), event.getPos(), nbt, event.getPlayer());
+                        if(event.getPlayer().getMainHandItem().getItem() == SSRegistry.shopCreate.get()) {//new ShopCreateGui(invTile,tile,event.getWorld(),event.getPos(),nbt,event.getPlayer());
+                            activateShop(invTile, tile, event.getWorld(), event.getPos(), nbt, event.getPlayer());
+                        }
                     }
                     else processTransaction(invTile, tile, event.getPlayer());
                 }
@@ -464,7 +480,7 @@ public class SShopLoader {
                 }
             });
             player.sendMessage(new TranslationTextComponent("message.shop.sell.success"
-                    , SEConfig.CURRENCY_SYMBOL.get()+String.valueOf(value), getTransItemsDisplayString(transItems)
+                    , getTransItemsDisplayString(transItems), SEConfig.CURRENCY_SYMBOL.get()+ value
             ), player.getUUID());
             return;
         }
@@ -515,7 +531,7 @@ public class SShopLoader {
                 player.inventory.getItem(pSlots.getKey()).shrink(pSlots.getValue().getCount());
             }
             player.sendMessage(new TranslationTextComponent("message.shop.sell.success"
-                    , SEConfig.CURRENCY_SYMBOL.get()+String.valueOf(value), getTransItemsDisplayString(transItems)
+                    , getTransItemsDisplayString(transItems), SEConfig.CURRENCY_SYMBOL.get()+ value
             ), player.getUUID());
             return;
         }

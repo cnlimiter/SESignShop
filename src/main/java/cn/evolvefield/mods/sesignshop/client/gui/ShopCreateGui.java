@@ -1,30 +1,24 @@
-package cm.evolvefield.mods.sesignshop.client.gui;
+package cn.evolvefield.mods.sesignshop.client.gui;
 
-import cm.evolvefield.mods.sesignshop.client.gui.base.ButtonRect;
-import cm.evolvefield.mods.sesignshop.client.gui.base.GuiScreenBase;
-import cm.evolvefield.mods.sesignshop.client.gui.base.TextFieldRect;
-import cm.evolvefield.mods.sesignshop.utils.ScreenUtil;
+import cn.evolvefield.mods.sesignshop.client.gui.base.ButtonRect;
+import cn.evolvefield.mods.sesignshop.client.gui.base.GuiScreenBase;
+import cn.evolvefield.mods.sesignshop.client.gui.base.TextFieldRect;
+
 import cn.evolvefield.mods.simpleeco.core.SEConfig;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.block.BlockState;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.widget.TextFieldWidget;
-import net.minecraft.client.gui.widget.Widget;
-import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.WritableBookItem;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.JsonToNBT;
 import net.minecraft.nbt.ListNBT;
-import net.minecraft.tileentity.ChestTileEntity;
 import net.minecraft.tileentity.SignTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
@@ -39,7 +33,7 @@ public class ShopCreateGui extends GuiScreenBase {
 
     private ButtonRect createShopBtn;
     private ButtonRect shopType;
-    private boolean type = false;
+    private boolean type = true;
 
     private TextFieldRect shopIntroduce;
     private TextFieldRect shopValue;
@@ -61,7 +55,8 @@ public class ShopCreateGui extends GuiScreenBase {
     }
 
 
-    private void setType(boolean value){
+    private void setType(){
+        boolean value = !type;
         type = value;
     }
 
@@ -71,13 +66,16 @@ public class ShopCreateGui extends GuiScreenBase {
         ItemStack srcStack = inv.map((c) -> c.getStackInSlot(0)).orElse(ItemStack.EMPTY);
         if (srcStack.equals(ItemStack.EMPTY, true)) return;
         try{
-            double price = Math.abs(Double.valueOf(shopValue.getValue()));
+            double price = Math.abs(Double.parseDouble(shopValue.getValue()));
             tile.getTileData().putDouble("price", price);
 
-            if(type = true){
+            if(type == true){
                 StringTextComponent buyAction = new StringTextComponent("[buy]");
                 buyAction.withStyle(TextFormatting.GREEN);
                 tile.setMessage(0, buyAction);
+                StringTextComponent desc = new StringTextComponent(shopIntroduce.getValue());
+                desc.withStyle(TextFormatting.LIGHT_PURPLE);
+                tile.setMessage(2, desc);
                 StringTextComponent buyPrice = new StringTextComponent(SEConfig.CURRENCY_SYMBOL.get()+String.valueOf(price));
                 buyPrice.withStyle(TextFormatting.GOLD);
                 tile.setMessage(3, buyPrice);
@@ -88,6 +86,9 @@ public class ShopCreateGui extends GuiScreenBase {
                 StringTextComponent sellAction = new StringTextComponent("[sell]");
                 sellAction.withStyle(TextFormatting.GREEN);
                 tile.setMessage(0, sellAction);
+                StringTextComponent desc = new StringTextComponent(shopIntroduce.getValue());
+                desc.withStyle(TextFormatting.LIGHT_PURPLE);
+                tile.setMessage(2, desc);
                 StringTextComponent sellPrice = new StringTextComponent(SEConfig.CURRENCY_SYMBOL.get()+String.valueOf(price));
                 sellPrice.withStyle(TextFormatting.GOLD);
                 tile.setMessage(3, sellPrice);
@@ -149,15 +150,14 @@ public class ShopCreateGui extends GuiScreenBase {
         super.init();
         if (minecraft != null){
             minecraft.keyboardHandler.setSendRepeatsToGui(true);
-            shopIntroduce =new TextFieldRect(minecraft.font, getScreenX() -80, getScreenY() -20 ,160, 16, "");
+            shopIntroduce =new TextFieldRect(minecraft.font, getScreenX() -50, getScreenY() -20 ,100, 16, "");
             children.add(shopIntroduce);
-            shopValue =new TextFieldRect(minecraft.font, getScreenX() -80, getScreenY() +10 ,160, 16, "");
+            shopValue =new TextFieldRect(minecraft.font, getScreenX() -50, getScreenY() +10 ,100, 16, "");
             children.add(shopValue);
 
-            shopType =addButton(new ButtonRect(getScreenX() , getScreenY() -50, 28, 16,"",(btn)->setType(!type)));
+            shopType =addButton(new ButtonRect(getScreenX() -30 , getScreenY() -50, 60, 16,"",(a)->setType()));
 
-
-            createShopBtn =addButton(new ButtonRect(getScreenX(), getScreenY() + 30, 56, 16,"",(btn)->create()));
+            createShopBtn =addButton(new ButtonRect(getScreenX()- 30, getScreenY() + 30, 60, 16,"",(btn)->create()));
 
         }
     }
@@ -165,9 +165,15 @@ public class ShopCreateGui extends GuiScreenBase {
     protected void drawGuiBackground(MatrixStack matrixStack, int mouseX, int mouseY) {
         shopIntroduce.render(matrixStack, mouseX, mouseY, 0);
         shopValue.render(matrixStack, mouseX, mouseY, 0);
-        ScreenUtil.drawCenteredString(matrixStack, new TranslationTextComponent("message.gui.title").toString(), getScreenX(), getScreenY() - 60, 0, 0xFFFFFF);
-        shopType.setMessage(new StringTextComponent("Type: " + (type ? "Buy" : "Sell")));
+        drawCenteredString(matrixStack,this.font,new TranslationTextComponent("message.gui.title"),getScreenX(),getScreenY()- 60,0xFFFFFF);
+        drawString(matrixStack,this.font,new TranslationTextComponent("message.gui.introduce"), getScreenX() -110 ,getScreenY()-20 ,0xFFFFFF);
+        drawString(matrixStack,this.font,new TranslationTextComponent("message.gui.value"), getScreenX() -110 ,getScreenY()+10 ,0xFFFFFF);
+        //ScreenUtil.drawCenteredString(matrixStack, "Shop", getScreenX(), getScreenY() - 60, 0, 0xFFFFFF);
+        shopType.setMessage(type ? new TranslationTextComponent("message.gui.type.buy") : new TranslationTextComponent("message.gui.type.sell"));
+        createShopBtn.setMessage(new TranslationTextComponent("message.gui.create"));
     }
+
+
 
 
 

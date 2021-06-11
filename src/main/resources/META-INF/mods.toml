@@ -34,7 +34,7 @@ displayName="SESignShop" #mandatory
 authors="cnlimiter" #optional
 # The description text for the mod (multi line!) (#mandatory)
 description='''
-
+A sign shop in minecraft base on SimpleEco
 '''
 # A dependency - use the . to indicate dependency for a specific modid. Dependencies are optional.
 [[dependencies.sesignshop]] #optional
@@ -60,6 +60,6 @@ description='''
    modId = "simpleeco"
    mandatory = true
    # This version range declares a minimum of the current minecraft version up to but not including the next major version
-   versionRange = "[1.0-SNAPSHOT,)"
+   versionRange = "[1.0.1,)"
    ordering = "NONE"
    side = "BOTH"

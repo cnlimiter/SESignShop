@@ -1,12 +1,10 @@
-package cm.evolvefield.mods.sesignshop.client.gui.base;
+package cn.evolvefield.mods.sesignshop.client.gui.base;
 
-import cm.evolvefield.mods.sesignshop.utils.ScreenUtil;
+import cn.evolvefield.mods.sesignshop.utils.ScreenUtil;
 import com.mojang.blaze3d.matrix.MatrixStack;
-import javafx.scene.Scene;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.Hand;
-import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 
 public abstract class GuiScreenBase extends Screen {
