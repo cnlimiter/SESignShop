@@ -15,19 +15,18 @@ import java.util.List;
 public class ShopCreateItem extends Item {
     public ShopCreateItem() {
         super(new Properties()
-                .tab(SETab.itemTab)
-                .stacksTo(1)
+                .group(SETab.itemTab)
+                .maxStackSize(1)
 
         );
     }
 
     @Override
-    public void appendHoverText(ItemStack itemStack, @Nullable World world, List<ITextComponent> tooltip, ITooltipFlag tag) {
+    public void addInformation(ItemStack itemStack, @Nullable World world, List<ITextComponent> tooltip, ITooltipFlag tag) {
 
         tooltip.add(new TranslationTextComponent("tooltip.item.shopCreate.use"));
 
 
     }
-
 
 }
