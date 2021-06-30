@@ -1,7 +1,8 @@
 package cn.evolvefield.mods.sesignshop.core.items;
 
-import cn.evolvefield.mods.simpleeco.core.SETab;
-import cn.evolvefield.mods.simpleeco.utils.LoreUtil;
+
+
+import cn.evolvefield.mods.simpleeco.main.SETab;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
