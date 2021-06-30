@@ -2,8 +2,8 @@ package cn.evolvefield.mods.sesignshop.core.events;
 
 import cn.evolvefield.mods.sesignshop.client.gui.ShopCreateGui;
 import cn.evolvefield.mods.sesignshop.core.SSRegistry;
-import cn.evolvefield.mods.simpleeco.core.SEConfig;
-import cn.evolvefield.mods.simpleeco.data.AccountManager;
+import cn.evolvefield.mods.simpleeco.core.money.AccountManager;
+import cn.evolvefield.mods.simpleeco.main.SEConfig;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.block.*;
 import net.minecraft.client.Minecraft;

@@ -5,7 +5,7 @@ import cn.evolvefield.mods.simpleeco.SimpleEco;
 import cn.evolvefield.mods.simpleeco.client.gui.base.ButtonRect;
 import cn.evolvefield.mods.simpleeco.client.gui.base.GuiScreenBase;
 import cn.evolvefield.mods.simpleeco.client.gui.base.TextFieldRect;
-import cn.evolvefield.mods.simpleeco.core.SEConfig;
+import cn.evolvefield.mods.simpleeco.main.SEConfig;
 import cn.evolvefield.mods.simpleeco.utils.ScreenUtil;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
@@ -25,6 +25,8 @@ import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
@@ -32,6 +34,7 @@ import net.minecraftforge.items.IItemHandler;
 
 import static cn.evolvefield.mods.sesignshop.SESignShop.MOD_ID;
 
+@OnlyIn(Dist.CLIENT)
 public class ShopCreateGui extends GuiScreenBase {
 
 
