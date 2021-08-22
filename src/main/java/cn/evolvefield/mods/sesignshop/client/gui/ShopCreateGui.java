@@ -5,12 +5,14 @@ import cn.evolvefield.mods.simpleeco.SimpleEco;
 import cn.evolvefield.mods.simpleeco.client.gui.base.ButtonRect;
 import cn.evolvefield.mods.simpleeco.client.gui.base.GuiScreenBase;
 import cn.evolvefield.mods.simpleeco.client.gui.base.TextFieldRect;
-import cn.evolvefield.mods.simpleeco.main.SEConfig;
+import cn.evolvefield.mods.simpleeco.init.SEConfig;
 import cn.evolvefield.mods.simpleeco.utils.ScreenUtil;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.block.BlockState;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.WritableBookItem;
 import net.minecraft.nbt.CompoundNBT;
@@ -25,6 +27,7 @@ import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.util.Constants;
@@ -32,9 +35,7 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 
-import static cn.evolvefield.mods.sesignshop.SESignShop.MOD_ID;
-
-@OnlyIn(Dist.CLIENT)
+//@OnlyIn(Dist.CLIENT)
 public class ShopCreateGui extends GuiScreenBase {
 
 
@@ -44,22 +45,24 @@ public class ShopCreateGui extends GuiScreenBase {
 
     private TextFieldRect shopIntroduce;
     private TextFieldRect shopValue;
-    TileEntity storage;
-    SignTileEntity tile;
-    World world;
-    BlockPos pos;
-    CompoundNBT nbt;
+    private final TileEntity storage;
+    private final SignTileEntity tile;
+    private final World world;
+    private final BlockPos pos;
+    private final CompoundNBT nbt;
 
 
 
-    public ShopCreateGui(TileEntity storage, SignTileEntity tile, World world, BlockPos pos, CompoundNBT nbt ,PlayerEntity player) {
-        super(player, Hand.MAIN_HAND);
+    public ShopCreateGui(TileEntity storage, SignTileEntity tile, World world, BlockPos pos, CompoundNBT nbt,PlayerEntity player ) {
+        super(player,Hand.MAIN_HAND);
         this.storage = storage;
         this.tile = tile;
         this.world = world;
         this.pos = pos;
         this.nbt = nbt;
     }
+
+
 
 
     private void setType(){
@@ -73,38 +76,38 @@ public class ShopCreateGui extends GuiScreenBase {
         ItemStack srcStack = inv.map((c) -> c.getStackInSlot(0)).orElse(ItemStack.EMPTY);
         if (srcStack.equals(ItemStack.EMPTY, true)) return;
         try{
-            double price = Math.abs(Double.parseDouble(shopValue.getText()));
+            double price = Math.abs(Double.parseDouble(shopValue.getValue()));
             tile.getTileData().putDouble("price", price);
 
             if(type == true){
                 StringTextComponent buyAction = new StringTextComponent("[buy]");
-                buyAction.mergeStyle(TextFormatting.GREEN);
-                tile.setText(0, buyAction);
-                StringTextComponent desc = new StringTextComponent(shopIntroduce.getText());
-                desc.mergeStyle(TextFormatting.LIGHT_PURPLE);
-                tile.setText(2, desc);
+                buyAction.withStyle(TextFormatting.GREEN);
+                tile.setMessage(0, buyAction);
+                StringTextComponent desc = new StringTextComponent(shopIntroduce.getValue());
+                desc.withStyle(TextFormatting.LIGHT_PURPLE);
+                tile.setMessage(2, desc);
                 StringTextComponent buyPrice = new StringTextComponent(SEConfig.CURRENCY_SYMBOL.get()+String.valueOf(price));
-                buyPrice.mergeStyle(TextFormatting.GOLD);
-                tile.setText(3, buyPrice);
+                buyPrice.withStyle(TextFormatting.GOLD);
+                tile.setMessage(3, buyPrice);
                 System.out.println("[buy]");
                 tile.getTileData().putString("shop-type", "buy");
             }
             else{
                 StringTextComponent sellAction = new StringTextComponent("[sell]");
-                sellAction.mergeStyle(TextFormatting.GREEN);
-                tile.setText(0, sellAction);
-                StringTextComponent desc = new StringTextComponent(shopIntroduce.getText());
-                desc.mergeStyle(TextFormatting.LIGHT_PURPLE);
-                tile.setText(2, desc);
+                sellAction.withStyle(TextFormatting.GREEN);
+                tile.setMessage(0, sellAction);
+                StringTextComponent desc = new StringTextComponent(shopIntroduce.getValue());
+                desc.withStyle(TextFormatting.LIGHT_PURPLE);
+                tile.setMessage(2, desc);
                 StringTextComponent sellPrice = new StringTextComponent(SEConfig.CURRENCY_SYMBOL.get()+String.valueOf(price));
-                sellPrice.mergeStyle(TextFormatting.GOLD);
-                tile.setText(3, sellPrice);
+                sellPrice.withStyle(TextFormatting.GOLD);
+                tile.setMessage(3, sellPrice);
                 System.out.println("[buy]");
                 tile.getTileData().putString("shop-type", "sell");
             }
 
             tile.getTileData().putBoolean("shop-activated", true);
-            tile.getTileData().putUniqueId("owner", player.getUniqueID());
+            tile.getTileData().putUUID("owner", player.getUUID());
             //Serialize all items in the TE and store them in a ListNBT
             ListNBT lnbt = new ListNBT();
             inv.ifPresent((p) -> {
@@ -118,28 +121,28 @@ public class ShopCreateGui extends GuiScreenBase {
                 }
             });
             tile.getTileData().put("items", lnbt);
-            tile.write(nbt);
-            tile.markDirty();
+            tile.save(nbt);
+            tile.setChanged();
             storage.getTileData().putBoolean("is-shop", true);
-            storage.getTileData().putUniqueId("owner", player.getUniqueID());
-            storage.write(new CompoundNBT());
+            storage.getTileData().putUUID("owner", player.getUUID());
+            storage.save(new CompoundNBT());
             BlockState state = world.getBlockState(pos);
-            world.notifyBlockUpdate(pos, state, state, Constants.BlockFlags.DEFAULT_AND_RERENDER);
+            world.sendBlockUpdated(pos, state, state, Constants.BlockFlags.DEFAULT_AND_RERENDER);
         }
         catch(NumberFormatException e) {
             world.destroyBlock(pos, true, player);
         }
-        player.closeScreen();
+        player.closeContainer();
     }
 
     private static CompoundNBT getItemFromBook(ItemStack stack) {
         CompoundNBT nbt = stack.getTag();
         if (nbt.isEmpty()) return stack.serializeNBT();
-        String page = nbt.getList("pages", Constants.NBT.TAG_STRING).get(0).getString();
+        String page = nbt.getList("pages", Constants.NBT.TAG_STRING).get(0).getAsString();
         if (page.substring(0, 7).equalsIgnoreCase("vending")) {
             String subStr = page.substring(8);
             try {
-                stack = ItemStack.read(JsonToNBT.getTagFromJson(subStr));
+                stack = ItemStack.of(JsonToNBT.parseTag(subStr));
                 return stack.serializeNBT();
             }
             catch(CommandSyntaxException e) {e.printStackTrace();}
@@ -156,10 +159,10 @@ public class ShopCreateGui extends GuiScreenBase {
     protected void init() {
         super.init();
         if (minecraft != null){
-            minecraft.keyboardListener.enableRepeatEvents(true);
-            shopIntroduce =new TextFieldRect(minecraft.fontRenderer, getScreenX() -50, getScreenY() -20 ,100, 16, "");
+            minecraft.keyboardHandler.setSendRepeatsToGui(true);
+            shopIntroduce =new TextFieldRect(minecraft.font,  -50, getScreenY() -20 ,100, 16, "");
             children.add(shopIntroduce);
-            shopValue =new TextFieldRect(minecraft.fontRenderer, getScreenX() -50, getScreenY() +10 ,100, 16, "");
+            shopValue =new TextFieldRect(minecraft.font, getScreenX() -50, getScreenY() +10 ,100, 16, "");
             children.add(shopValue);
 
             shopType =addButton(new ButtonRect(getScreenX() -30 , getScreenY() -50, 60, 16,"",(a)->setType()));
@@ -182,9 +185,6 @@ public class ShopCreateGui extends GuiScreenBase {
         shopType.setMessage(type ? new TranslationTextComponent("message.gui.type.buy") : new TranslationTextComponent("message.gui.type.sell"));
         createShopBtn.setMessage(new TranslationTextComponent("message.gui.create"));
     }
-
-
-
 
 
     @Override

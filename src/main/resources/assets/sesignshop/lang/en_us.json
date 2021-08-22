@@ -1,11 +1,13 @@
 {
-    "item.sesignshop.shop_create":"Shop Create Wand",
+    "item.sesignshop.shop_sign":"Shop Sign",
     "tooltip.item.shopCreate.use": "First,put what you want to sell/buy in chest,then sneak to right click chest",
 
 
     "message.create.failure.noItem": "No item in chest",
     "message.create.money": "Create a shop by giving %s",
+    "message.activate.failure.common": "Activated failure",
     "message.activate.failure.admin":"Server shops can only be activated by admins",
+    "message.action.not_editable": "Can't edit sign",
     "message.shop.buy.failure.same":"Can't buy for you are owner",
     "message.shop.buy.failure.stock":"Shop out of stock",
     "message.shop.buy.failure.funds":"Insufficient funds to buy",

@@ -1,10 +1,12 @@
 {
-  "item.sesignshop.shop_create":"商店创建之杖",
+  "item.sesignshop.shop_sign":"商店牌子",
   "tooltip.item.shopCreate.use": "首先,在箱子里放入你要收购或出售的物品,然后用它潜行右击箱子",
 
   "message.create.failure.noItem": "箱子里没有物品,无法创建商店",
-  "message.create.money": "使用 %s 创建商店",
-  "message.activate.failure.admin": "只有管理员能激活系统商店",
+  "message.create.money": "花费 %s 创建商店",
+  "message.activate.failure.common": "激活失败",
+  "message.activate.failure.admin": "只有管理员能激活系统商店/权限不足",
+  "message.action.not_editable": "不能编辑牌子",
   "message.shop.buy.failure.same": "您是商店的主人,不能购买",
   "message.shop.buy.failure.stock": "商店现在没有库存",
   "message.shop.buy.failure.funds": "你没有足够的余额支付",

@@ -1,4 +1,4 @@
-package cn.evolvefield.mods.sesignshop.commands;
+package cn.evolvefield.mods.sesignshop.core.commands;
 
 import com.mojang.brigadier.CommandDispatcher;
 import net.minecraft.command.CommandSource;
@@ -20,7 +20,7 @@ public class CommandLoader {
 
     @SubscribeEvent
     public static void register(FMLServerAboutToStartEvent event) {
-        CommandDispatcher<CommandSource> dispatcher = event.getServer().getCommandManager().getDispatcher();
+        CommandDispatcher<CommandSource> dispatcher = event.getServer().getCommands().getDispatcher();
         if (!init) {
             register(dispatcher);
             init = true;
