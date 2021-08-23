@@ -1,6 +1,5 @@
 package cn.evolvefield.mods.sesignshop.utils;
 
-import cn.evolvefield.mods.simpleeco.init.SEConfig;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.DyeItem;
 import net.minecraft.item.Item;

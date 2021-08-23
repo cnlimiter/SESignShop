@@ -1,6 +1,4 @@
 {
-  "item.sesignshop.shop_sign":"商店牌子",
-  "tooltip.item.shopCreate.use": "首先,在箱子里放入你要收购或出售的物品,然后用它潜行右击箱子",
 
   "message.create.failure.noItem": "箱子里没有物品,无法创建商店",
   "message.create.money": "花费 %s 创建商店",
