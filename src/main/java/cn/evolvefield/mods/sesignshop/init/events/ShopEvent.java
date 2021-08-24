@@ -275,7 +275,7 @@ public class ShopEvent {
     }
 
     private static void getSaleInfo(CompoundNBT nbt, PlayerEntity player) {
-        if (System.currentTimeMillis() - timeSinceClick.getOrDefault(player.getUUID(), 0l) < 1500) return;
+        if (System.currentTimeMillis() - timeSinceClick.getOrDefault(player.getUUID(), 0L) < 1500) return;
         String type = nbt.getString("shop-type");
         boolean isBuy = type.equalsIgnoreCase("buy") || type.equalsIgnoreCase("server-buy");
         List<ItemStack> transItems = new ArrayList<>();
@@ -347,7 +347,7 @@ public class ShopEvent {
                     final int t = tf;
                     Optional<Boolean> test = inv.map((p) -> {
                         for (int i = 0; i < p.getSlots(); i++) {
-                            ItemStack inSlot = ItemStack.EMPTY;
+                            ItemStack inSlot;
                             if (slotMap.containsKey(i) && transItems.get(t).getItem().equals(slotMap.get(i).getItem()) && ItemStack.tagMatches(transItems.get(t), slotMap.get(i))) {
                                 inSlot = p.extractItem(i, stackSize[0] + slotMap.get(i).getCount(), true);
                                 inSlot.shrink(slotMap.get(i).getCount());

@@ -6,6 +6,7 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.util.text.TranslationTextComponent;
 
 public class ShopSignGUI extends AbstractGui {
@@ -38,6 +39,5 @@ public class ShopSignGUI extends AbstractGui {
         //shopType.setMessage(type ? new TranslationTextComponent("message.gui.type.buy") : new TranslationTextComponent("message.gui.type.sell"));
         drawString(matrixStack,this.font,new TranslationTextComponent("message.gui.type"),this.width -110 ,this.height+10 ,0xFFFFFF);
     }
-
 
 }

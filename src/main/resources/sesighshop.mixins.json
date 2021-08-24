@@ -2,10 +2,13 @@
   "minVersion": "0.8",
   "required": true,
   "compatibilityLevel": "JAVA_8",
-  "package": "cn.evolvefield.mods.sesignshop",
+  "package": "cn.evolvefield.mods.sesignshop.mixin",
   "mixins": [],
-
+  "refmap": "sesignshop.refmap.json",
   "injectors": {
     "defaultRequire": 1
-  }
+  },
+  "client": [
+    "SignTileEntityRendererMixin"
+  ]
 }

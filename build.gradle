@@ -7,15 +7,15 @@ buildscript {
     }
     dependencies {
         classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '4.1.+', changing: true
-        //classpath group: 'org.spongepowered', name: 'mixingradle', version: '0.7-SNAPSHOT'
+        classpath group: 'org.spongepowered', name: 'mixingradle', version: '0.7-SNAPSHOT'
     }
 }
 
 apply plugin: 'net.minecraftforge.gradle'
-//apply plugin: 'org.spongepowered.mixin'
+apply plugin: 'org.spongepowered.mixin'
 
 group = 'cm.evolvefield.mods'
-version = '1.2.2'
+version = '1.3.2'
 archivesBaseName = 'SESignShop'
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(8) // Mojang ships Java 8 to end users, so your mod should target Java 8.
@@ -28,6 +28,7 @@ minecraft {
     runs {
         client {
             workingDirectory project.file('run')
+            arg "-mixin.config=sesighshop.mixins.json"
             property 'forge.logging.markers', 'REGISTRIES'
             property 'forge.logging.console.level', 'debug'
             mods {
@@ -67,6 +68,7 @@ sourceSets.main.resources { srcDir 'src/generated/resources' }
 dependencies {
     minecraft 'net.minecraftforge:forge:1.16.5-36.1.65'
     compile fileTree(dir:'libs', includes: ['*.jar'])
+    annotationProcessor 'org.spongepowered:mixin:0.8.2:processor'
 }
 jar {
     manifest {
@@ -78,9 +80,13 @@ jar {
                 "Implementation-Version"  : project.version,
                 "Implementation-Vendor"   : "cnlimiter",
                 "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
-                //"MixinConfigs": "sesighshop.mixins.json"
+                "MixinConfigs": "sesighshop.mixins.json",
         ])
     }
+}
+
+mixin {
+    add sourceSets.main, "sesignshop.refmap.json"
 }
 
 jar.finalizedBy('reobfJar')
